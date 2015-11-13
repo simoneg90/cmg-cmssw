@@ -1,6 +1,8 @@
 ##########################################################
+##                                                      ##
 ##       CONFIGURATION FOR EXO MONOJET TREES            ##
 ## skim condition:   MET > 200 GeV                      ##
+##                                                      ##
 ##########################################################
 import PhysicsTools.HeppyCore.framework.config as cfg
 
