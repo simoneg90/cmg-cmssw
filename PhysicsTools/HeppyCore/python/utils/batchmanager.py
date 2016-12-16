@@ -242,13 +242,14 @@ class BatchManager:
 
     def RunningMode(self, batch):
 
-        '''Return "LXPUS", "PSI", "NAF", "LOCAL", or None,
+        '''Return "LXPUS", "PSI", "NAF", "LOCAL", "ROME", or None,
 
         "LXPLUS" : batch command is bsub, and logged on lxplus
         "PSI"    : batch command is qsub, and logged to t3uiXX
         "NAF"    : batch command is qsub, and logged on naf
         "IC"     : batch command is qsub, and logged on hep.ph.ic.ac.uk
         "LOCAL"  : batch command is nohup.
+        "ROME"   : batch command is bsub, and logged on cmsui02, cmsui03 or cmsui04
 
         In all other cases, a CmsBatchException is raised
         '''
@@ -258,13 +259,18 @@ class BatchManager:
         onLxplus = hostName.startswith('lxplus')
         onPSI    = hostName.startswith('t3ui')
         onNAF =  hostName.startswith('naf')
+        onRome = hostName.startswith('cmsrm')
 
         batchCmd = batch.split()[0]
 
         if batchCmd == 'bsub':
             if not onLxplus:
-                err = 'Cannot run %s on %s' % (batchCmd, hostName)
-                raise ValueError( err )
+                if onRome:
+                  print 'running %s on Rome ui %s' % (batchCmd, hostName)
+                  return 'LXPLUS' #same lxplus configuration
+                else:
+                  err = 'Cannot run %s on %s' % (batchCmd, hostName)
+                  raise ValueError( err )
             else:
                 print 'running on LSF : %s from %s' % (batchCmd, hostName)
                 return 'LXPLUS'
